@@ -1,0 +1,22 @@
+<?php
+$page = $this->getLayout()->getBlock('page');
+if ($page) {
+    $storeIds = $page->getStoreId();
+
+    if (is_array($storeIds) && count($storeIds) > 1) :
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $scopeConfig = $objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class);
+
+        foreach ($storeIds as $storeId) :
+            $storeLanguage = $scopeConfig->getValue(
+                'general/locale/code',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                $storeId
+            );
+
+            $baseUrl = $this->getBaseUrl();
+            $cmsPageUrl = $baseUrl . 'about-us/';
+            echo "<link rel=\"alternate\" hreflang=\"$storeLanguage\" href=\"$cmsPageUrl\">\n";
+        endforeach;
+    endif;
+}
